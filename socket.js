@@ -21,8 +21,9 @@ module.exports = (server, app) =>{
               if (err){
                 console.log(err);
               } else {
-                let base64File = fileContent.toString('base64');
 
+                // Base64 파일 인코딩
+                let base64File = fileContent.toString('base64');
                 socket.emit("testFile", {success: true, base64File});
               }
             })            
