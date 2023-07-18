@@ -6,11 +6,12 @@ const socketIO = require('socket.io');
 module.exports = (server, app) =>{
     const http = require('http').createServer(app);
     const io = socketIO(server, {path:'/socket.io'}, {maxHttpBufferSizke:1e8});
-    let data = "";
+    const fromClientData = {};
 
     // 소켓 연결
     io.on('connection', (socket) => {
         console.log("User connect : " + socket.id);
+        fromClientData[socket.id] = '';
 
         io.to(socket.id).emit('test', '...');
 
@@ -39,13 +40,14 @@ module.exports = (server, app) =>{
         socket.on('sendFile', (encodedData) => {
           const total = encodedData.total;
           const count = encodedData.count;
-          
-          if (encodedData.count === encodedData.total){
-            data += encodedData.data;
-            console.log(`Done.  Length : ${data.length}`);
 
-            const decodedFile = Buffer.from(data, 'base64');
+          if (encodedData.count === encodedData.total){
+            fromClientData[socket.id] += encodedData.data;
+            console.log(`Done.  Length : ${fromClientData[socket.id].length}`);
+
+            const decodedFile = Buffer.from(fromClientData[socket.id], 'base64');
             const savePath = path.join(__dirname, 'public', 'receive.obj');
+
             fs.writeFile(savePath, decodedFile, (err) => {
               if (err){
                 console.log('Err : ' + err);
@@ -56,14 +58,14 @@ module.exports = (server, app) =>{
 
           } else{
             console.log(`${(count / total * 100.0).toFixed(2)}% Downloaded...`);
-            data += encodedData.data;
+            fromClientData[socket.id] += encodedData.data;
           }
         });
 
         // 소켓 연결 해제시
         socket.on('disconnect', () => {
             console.log("user disconnected");
-            data = "";
+            fromClientData[socket.id] = '';
         })
     });
 }
