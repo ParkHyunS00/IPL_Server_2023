@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt');
 const saltRounds = 5;
 
 module.exports = {
-
     // 로그인 기능
     login: async (userData) => {
         let existUser = undefined; 
@@ -11,15 +10,21 @@ module.exports = {
         // DB에서 유저 찾기
         db.query(`select * from users where id = '${userData.id}'`, (err, result, fields) => {
             if(err){
-                console.log('Find Err');
+                console.log('Find Err' + err);
             } else {
                 existUser = result[0];
-                const isSame = bcrypt.compareSync(userData.pwd, existUser.pwd); // 암호화된 비밀번호로 비교
-    
-                if (isSame){
-                    console.log('Login Success');
+
+                if (existUser != undefined){
+                    
+                     // 암호화된 비밀번호로 비교
+                    const isSame = bcrypt.compareSync(userData.pwd, existUser.pwd);
+                    if (isSame){
+                        console.log('Login Success');
+                    } else {
+                        console.log('Login Fail');
+                    }
                 } else {
-                    console.log('Login Fail');
+                    console.log('Not Exist User');
                 }
                 
             }
@@ -46,7 +51,5 @@ module.exports = {
                 console.log('User Regist Success');
             }
         });
-    }
+    },
 };
-
-// TODO: 존재하는 유저인지 확인 필요
