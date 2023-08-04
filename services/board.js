@@ -40,7 +40,7 @@ module.exports = {
 
                 // TODO: 클라이언트에서 보낸 이미지를 먼저 저장하기.
                 
-                // 리사이즈된 이미지 구분하기 위해 이름 형식 지정
+                // 리사이즈된 이미지 구분하기 위해 이름 형식 지정 => {클라이언트가 보낸 이미지 이름}_{DB에 저장된 PK}.확장자
                 const renaming = `${postData.image_name.split(".")[0]}_${result.insertId}.jpg`;
 
                 sharp(path.join(__dirname, '..', 'public', postData.image_name))
@@ -63,5 +63,22 @@ module.exports = {
                 resolve(result.insertId); // auto_increment에 따라 생성된 최근 id값
             });
         });
+    },
+
+    // 게시물 클릭시 상세보기 -> PK로 검색
+    selectPost: async (postNum) => {
+        return new Promise((resolve, reject) => {
+            const query = `select * from board where num='${postNum}'`;
+
+            db.query(query, (err, result) => {
+                if (err){
+                    console.log('Error while select from board with num : ', err.message);
+                    reject(err);
+                    return;
+                }
+
+                resolve(result[0]);
+            })
+        })
     }
 }

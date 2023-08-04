@@ -45,7 +45,7 @@ const data = {
     user_id: 'test'
 }
 
-board.insertPost(data)
+board.selectPost(1)
     .then((result) => {
         console.log(result);
     })
