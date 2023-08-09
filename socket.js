@@ -7,13 +7,27 @@ module.exports = (server, app) =>{
     const http = require('http').createServer(app);
     const io = socketIO(server, {path:'/socket.io'}, {maxHttpBufferSizke:1e8});
     const fromClientData = {};
+    const who = {};
 
     // 소켓 연결
     io.on('connection', (socket) => {
         console.log("User connect : " + socket.id);
         fromClientData[socket.id] = '';
 
-        io.to(socket.id).emit('test', '...');
+        setTimeout(() => io.to(socket.id).emit('ml test', {'msg': path.join(__dirname, 'public', 'cake1.jpg'), 'job_id': 'totoro', 'prompt':'a totoro figure'}), 5000);
+ 
+        // io.to(socket.id).emit('ml test', {'msg': path.join(__dirname, 'public', 'cake1.jpg'), 'job_id': 'totoro'})
+
+        socket.on('client registration', (data) => {
+          who[socket.id] = data['device'];
+          console.log(`[${new Date().toLocaleString()}]: socket ID: ${socket.id} : ${who[socket.id]}`)
+        })
+
+        socket.on('ml message', (data) => {
+          console.log(data);
+        })
+
+        // io.to(socket.id).emit('test', '...');
 
         // 클라이언트에서 obj 파일 달라는 이벤트 수신시
         // socket.on('connectReceive', (data) => {
