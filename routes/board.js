@@ -9,6 +9,8 @@ router.use(bodyParser.json());
 router.post('/boardlist', (req, res) => {
     const postData = req.body;
 
+    console.log(postData);
+
     // 사용자의 ID 값이 전달 됐는지 판단 -> 전달 안됐다면 전체 게시물 리스트, 전달 됐다면 사용자가 등록한 게시물 리스트
     const getBoardList = (Object.keys(postData).length == 0)
         ? boardSystem.getBoardList()

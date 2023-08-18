@@ -43,7 +43,7 @@ module.exports = {
                             num: data.num,
                             title: data.title,
                             content: data.content,
-                            thumnail_image: fileContent,
+                            thumbnail_image: fileContent,
                             regist_date: data.regist_date,
                             user_id: data.user_id
                         };
@@ -144,7 +144,7 @@ module.exports = {
         })
     },
 
-     // 게시물 클릭시 상세보기 -> PK로 검색, 썸네일 이미지로
+     // 게시물 데이터 가져오기 -> PK로 검색, 썸네일 이미지로
      selectPostWithThumb: async (postNum) => {
         return new Promise((resolve, reject) => {
             try {

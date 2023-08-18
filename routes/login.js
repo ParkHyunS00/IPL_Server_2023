@@ -10,6 +10,7 @@ router.use(bodyParser.json());
 // 아이디 중복검사 라우터
 router.post('/idcheck', async (req, res) => {
     const userData = req.body;
+    console.log(userData);
 
     try {
         const user = await loginSystem.findUserById(userData);
@@ -39,6 +40,7 @@ router.post('/userLogin', async (req, res) => {
 // 회원가입 라우터
 router.post('/registUser', async (req, res) => {
     const userData = req.body;
+    console.log(userData);
 
     try {
         const result = await loginSystem.registUser(userData);
@@ -49,7 +51,7 @@ router.post('/registUser', async (req, res) => {
             res.status(400).json({success: false, message: 'Regist Fail'});
         }
     } catch (error) {
-        res.status(500).json({success: false, message: 'Error'});
+        res.status(500).json({success: false, message: error.message});
     }
 });
 
